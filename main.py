@@ -4,7 +4,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import List, Dict, Optional, Union
 import os
 import shutil
@@ -84,7 +84,7 @@ def create_access_token(data: dict, expires_delta: timedelta):
     import json
     
     token_data = data.copy()
-    token_data.update({"exp": datetime.utcnow() + expires_delta})
+    token_data.update({"exp": datetime.now(timezone.utc) + expires_delta})
     token_data.update({"jti": str(uuid.uuid4())})
     encoded = base64.b64encode(json.dumps(token_data).encode())
     return encoded.decode()
